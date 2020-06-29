@@ -1,41 +1,26 @@
 <!DOCTYPE html>
-<html>
+
     <head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> -->
    
-
+   <title>task2</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    
-    
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-  
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 
-    
-    <script>
-        $(document).ready( function () {
-    $('#excelDataTable').DataTable();
-    } );
-    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+
     </head>
-
-<body onLoad="buildHtmlTable('#excelDataTable')">
-  <table id="excelDataTable" border="1" class="table table-hover table-striped ">
-      
-  </table>
-</body>
+    <?php
 
 
-</html>
-
-
-<?php
-
-
-    $ch = curl_init();
-    $user = "1";
-    $url='https://jsonplaceholder.typicode.com/users/';
-    curl_setopt($ch,CURLOPT_URL,$url);
+$ch = curl_init();
+$user = "1";
+$url='https://jsonplaceholder.typicode.com/users/';
+curl_setopt($ch,CURLOPT_URL,$url);
 curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
 //curl_setopt($ch,CURLOPT_HEADER, true); //if you want headers
 
@@ -44,8 +29,23 @@ $output=curl_exec($ch);
 curl_close($ch);
 
 ?>
+<body onLoad="buildHtmlTable('#excelDataTable')">
+  <table id="excelDataTable"  class="table table-hover table-striped ">
+      
+  </table>
+  <h2 id="hello">hello</h2>
+  
 
-<script>
+
+  <script>
+        $(document).ready(function() {
+    $('#excelDataTable').DataTable( {
+        "order": [[ 3, "desc" ]]
+    } );
+} );
+
+    
+
 
     var data = <?php echo $output ?>;
     var data1 =[];
@@ -102,3 +102,8 @@ function addAllColumnHeaders(myList, selector) {
 }
     
 </script>
+
+
+
+</body>
+</html>
