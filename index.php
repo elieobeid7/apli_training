@@ -1,109 +1,82 @@
 <!DOCTYPE html>
-
-    <head>
-    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> -->
-   
-   <title>task2</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<html lang="en">
+<head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=\, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-
-    </head>
-    <?php
-
-
-$ch = curl_init();
-$user = "1";
-$url='https://jsonplaceholder.typicode.com/users/';
-curl_setopt($ch,CURLOPT_URL,$url);
-curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-//curl_setopt($ch,CURLOPT_HEADER, true); //if you want headers
-
-$output=curl_exec($ch);
-
-curl_close($ch);
-
-?>
-<body onLoad="buildHtmlTable('#excelDataTable')">
-  <table id="excelDataTable"  class="table table-hover table-striped ">
-      
-  </table>
-  <h2 id="hello">hello</h2>
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous"> -->
   
+</head>
+<body>
 
-
-  <script>
-        $(document).ready(function() {
-    $('#excelDataTable').DataTable( {
-        "order": [[ 3, "desc" ]]
-    } );
-} );
-
+<form class="dropdown-menu p-4" method="post">
+  <div class="form-group">
+    <label for="exampleDropdownFormEmail2">Username</label>
+    <input type="text" class="form-control" name="username" placeholder="Username">
+  </div>
+  <div class="form-group">
+    <label for="exampleDropdownFormPassword2">Password</label>
+    <input type="password" name="password" class="form-control" id="exampleDropdownFormPassword2" placeholder="Password">
+  </div>
+  <div class="form-group">
     
-
-
-    var data = <?php echo $output ?>;
-    var data1 =[];
-
-
-    for(i=0;i<data.length;i++)
-    {
-    
-    data1.push(
-        {"Name": data[i].name,
-        "Username": data[i].username,
-        "Email": data[i].email,
-        "City": data[i].address.city
-    }
-    );
-    }
-
-    var myList = data1;
-
-// Builds the HTML Table out of myList.
-function buildHtmlTable(selector) {
-  var columns = addAllColumnHeaders(myList, selector);
-
-  for (var i = 0; i < myList.length; i++) {
-    var row$ = $('<tr/>');
-    for (var colIndex = 0; colIndex < columns.length; colIndex++) {
-      var cellValue = myList[i][columns[colIndex]];
-      if (cellValue == null) cellValue = "";
-      row$.append($('<td/>').html(cellValue));
-    }
-    $(selector).append(row$);
-  }
-}
-
-// Adds a header row to the table and returns the set of columns.
-// Need to do union of keys from all records as some records may not contain
-// all records.
-function addAllColumnHeaders(myList, selector) {
-  var columnSet = [];
-  var headerTr$ = $('<tr/>');
-
-  for (var i = 0; i < myList.length; i++) {
-    var rowHash = myList[i];
-    for (var key in rowHash) {
-      if ($.inArray(key, columnSet) == -1) {
-        columnSet.push(key);
-        headerTr$.append($('<th/>').html(key));
-      }
-    }
-  }
-  $(selector).append(headerTr$);
-
-  return columnSet;
-}
-    
-</script>
-
-
-
+    </div>
+  </div>
+  <button type="submit" class="btn btn-primary" name="submit_btn">Sign in</button>
+ 
+  <a href="signup.php">Sign up</a>
+</form>
 </body>
 </html>
+
+<?php
+session_start();
+    $host ='localhost';
+    $user ='root';
+    $password ='123456';
+    $dbname ='signup_form';
+
+// Set DSN
+    $dsn = 'mysql:host=' .$host .';dbname=' .$dbname;
+
+// Create a pdo instance
+    $pdo = new PDO($dsn, $user, $password);
+?>
+
+    <?php
+    if(isset($_POST['submit_btn'])){
+      
+        if($_POST['username'] == "" || $_POST['password'] == "")
+        {
+            header("location:index.php?Empty= please fill in the blanks");
+            
+        }
+        else {
+            $username = $_POST['username'];
+            $pass = $_POST['password'];
+
+    
+        $sql ='SELECT * FROM signup where username = :username && password = :pass ';   
+        $stmt =$pdo->prepare($sql);
+        $stmt -> execute(['username'=>$username , 'pass' => $pass]);                     
+        $users = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+        foreach($users as $user_table)
+        {
+            $_SESSION['User'] = $_POST['username'];
+            header("location:curl.php"); 
+            
+        }
+        if(empty($user_table))
+            {
+            header("location:index.php?Invalid= please enter valid username and password");
+
+            }
+        }
+             
+     }
+
+    
+    
+    
+    ?>
